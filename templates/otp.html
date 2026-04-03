@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Verify Email - Sudoku Web</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="auth-container">
+        <h2 style="margin-top: 0; margin-bottom: 10px;">Check Your Email</h2>
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">We sent a 6-digit code to <strong>{{ email }}</strong></p>
+        {% if message %}
+            <div style="background-color: #ffcdd2; color: #b71c1c; padding: 10px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; font-size: 14px;">
+                {{ message }}
+            </div>
+        {% endif %}
+        <form action="/verify" method="POST">
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label for="otp">Verification Code:</label>
+                <input type="text" name="otp" id="otp" required maxlength="6" style="text-align: center; font-size: 24px; letter-spacing: 5px; font-weight: bold;">
+            </div>
+            <button type="submit" class="menu-btn primary">Verify Account</button>
+        </form>
+    </div>
+</body>
+</html>

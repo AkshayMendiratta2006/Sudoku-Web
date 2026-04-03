@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Account Settings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .settings-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: left;
+            border: 1px solid #eee;
+        }
+        .settings-section h3 { margin-top: 0; color: #333; border-bottom: 2px solid #ddd; padding-bottom: 5px; }
+        .settings-section label { display: block; font-weight: bold; margin-top: 10px; margin-bottom: 5px; font-size: 14px;}
+        
+        .alert { padding: 10px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; }
+        .alert-info { background-color: #bbdefb; color: #004ba0; }
+
+        .danger-zone { border-color: #ffcdd2; background: #ffebee; }
+        .danger-zone h3 { color: #d32f2f; border-bottom-color: #ef9a9a; }
+        .btn-logout { background-color: #757575; color: white; }
+
+        body.dark-mode .auth-container { background-color: #1e1e1e; color: #fff; }
+        body.dark-mode .settings-section { background: #2a2a2a; border-color: #444; }
+        body.dark-mode .settings-section h3 { color: #fff; border-bottom-color: #555; }
+        
+        body.dark-mode .danger-zone { background-color: #3b1515; border-color: #5c1e1e; }
+        body.dark-mode .danger-zone h3 { color: #ff8a80; border-bottom-color: #b71c1c; }
+        body.dark-mode .btn-logout { background-color: #555; color: white; }
+    </style>
+</head>
+<body data-logged-in="true">
+    <nav class="top-bar">
+        <a href="/" class="nav-link login-link">⬅️ Back to Dashboard</a>
+        <button id="theme-toggle" class="theme-btn">🌙 Dark Mode</button>
+    </nav>
+
+    <div class="auth-container" style="width: 450px; margin-top: 40px;">
+        <h2 style="margin-top: 0; margin-bottom: 20px;">Account Settings</h2>
+        <div style="text-align: center; margin-bottom: 25px;">
+            <img src="https://ui-avatars.com/api/?name={{ current_user.username }}&background=random&size=120" alt="Profile" class="profile-pic" style="width: 100px; height: 100px; margin: 0 auto;">
+        </div>
+
+        {% if message %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endif %}
+
+        <div class="settings-section">
+            <h3>Profile Information</h3>
+            <form method="POST" action="/settings">
+                <input type="hidden" name="action" value="update_profile">
+                <label>Username:</label>
+                <input type="text" name="username" value="{{ current_user.username }}" required>
+                <label>Email Address:</label>
+                <input type="email" name="email" value="{{ current_user.email }}" required>
+                <button type="submit" class="menu-btn primary" style="width: 100%; margin-top: 15px; padding: 10px;">Save Profile</button>
+            </form>
+        </div>
+        <div class="settings-section">
+            <h3>Change Password</h3>
+            <form method="POST" action="/settings">
+                <input type="hidden" name="action" value="update_password">
+                <label>Current Password:</label>
+                <div>
+                    <input type="password" name="current_password" id="current_password" required style="width: 85%;">
+                    <button type="button" id="toggleCurrent" style="cursor: pointer; background: none; border: none; font-size: 1.2rem;">👁️</button>
+                </div>
+                <label>New Password:</label>
+                <div>
+                    <input type="password" name="new_password" id="new_password" required style="width: 85%;">
+                    <button type="button" id="toggleNew" style="cursor: pointer; background: none; border: none; font-size: 1.2rem;">👁️</button>
+
+                </div>
+                <button type="submit" class="menu-btn secondary" style="width: 100%; margin-top: 15px; padding: 10px;">Update Password</button>
+            </form>
+        </div>
+        <div class="settings-section danger-zone">
+            <h3>Danger Zone</h3>
+            <div style="text-align: center; margin-bottom: 15px;">
+                <a href="/logout" class="menu-btn btn-logout" style="display: inline-block; width: auto; padding: 10px 40px; text-decoration: none;">Log Out</a>
+            </div>
+            <form method="POST" action="/settings" onsubmit="return confirm('Are you sure you want to completely delete your account and all saved data? This cannot be undone.');">
+                <input type="hidden" name="action" value="delete_account">
+                <button type="submit" class="menu-btn" style="display: block; width: 100%; background-color: #F44336; padding: 10px;">Delete Account</button>
+            </form>
+        </div>
+        <div style="text-align: center; margin-top: 25px; margin-bottom: 10px;">
+            <a href="/terms" style="color: #888; text-decoration: none;font-size: 14px; font-weight: bold;">📜 View Terms & Conditions</a>
+        </div>
+    </div>
+
+    <script>
+        const themeBtn = document.getElementById('theme-toggle');
+        if (localStorage.getItem('sudoku_theme') === 'dark'){
+            document.body.classList.add('dark-mode');
+            themeBtn.textContent = '☀️ Light Mode';
+        }
+        themeBtn.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                themeBtn.textContent = '☀️ Light Mode';
+                localStorage.setItem('sudoku_theme', 'dark');
+            } else {
+                themeBtn.textContent = '🌙 Dark Mode';
+                localStorage.setItem('sudoku_theme', 'light');
+            }
+        });
+
+        function setupPasswordToggle(inputId, buttonId){
+            const passInput = document.getElementById(inputId);
+            const toggleBtn = document.getElementById(buttonId);
+            if (passInput && toggleBtn){
+                toggleBtn.addEventListener('click', function(){
+                    if (passInput.type === 'password'){
+                        passInput.type = 'text';
+                        toggleBtn.textContent = '🙈';
+                    } else {
+                        passInput.type = 'password';
+                        toggleBtn.textContent = '👁️';
+                    }
+                });
+            }
+        }
+
+        setupPasswordToggle('current_password', 'toggleCurrent');
+        setupPasswordToggle('new_password', 'toggleNew');
+    </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Terms & Conditions - Sudoku Web</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .legal-container{
+            max-width: 800px;
+            margin: 50px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            line-height: 1.6;
+        }
+        body.dark-mode .legal-container{
+            background-color: #1e1e1e;
+            color: #fff;
+        }
+    </style>
+</head>
+<body data-logged-in="{{ 'true' if current_user.is_authenticated else 'false' }}">
+    <nav class="top-bar">
+        {% if current_user.is_authenticated %}
+            <a href="/settings" class="nav-link login-link">⬅️ Back to Settings</a>
+        {% else %}
+            <a href="/register" class="nav-link login-link">⬅️ Back to Register</a>
+        {% endif %}
+        <button id="theme-toggle" class="theme-btn">🌙 Dark Mode</button>
+    </nav>
+
+    <div class="legal-container">
+        <h1>Terms & Conditions</h1>
+        <p>Last updated: March 2026</p>
+
+        <h3>1. Acceptance of Terms</h3>
+        <p>By registering an account on Sudoku Web, you agree to these Terms and Conditions. If you do not agree, please do not use the application.</p>
+
+        <h3>2. User Data and Privacy</h3>
+        <p>We collect your email and username strictly for account authentication and saving your game progress. We do not sell your personal data to third parties. Your passwords are cryptographically hashed and cannot be read by our team.</p>
+        
+        <h3>3. Intellectual Property</h3>
+        <p>The core mathematical rules of Sudoku are public domain. However, the unique code, UI design, and branding of this specific web application are the intellectual property of the developer.</p>
+        
+        <h3>4. Disclaimer of Liability</h3>
+        <p>This application is provided "as is". The developer is not liable for any data loss, including saved games or account information.</p>
+    </div>
+
+    <script>
+        const themeBtn = document.getElementById('theme-toggle');
+        if (localStorage.getItem('sudoku_theme') === 'dark'){
+            document.body.classList.add('dark-mode');
+            themeBtn.textContent = '☀️ Light Mode';
+        }
+        themeBtn.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                themeBtn.textContent = '☀️ Light Mode';
+                localStorage.setItem('sudoku_theme', 'dark');
+            } else {
+                themeBtn.textContent = '🌙 Dark Mode';
+                localStorage.setItem('sudoku_theme', 'light');
+            }
+        });
+    </script>
+</body>
+</html>

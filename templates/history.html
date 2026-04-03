@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Player History - Sudoku Web</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body data-logged-in="true">
+    <nav class="top-bar">
+        <a href="/" class="nav-link login-link">⬅️ Back to Dashboard</a>
+        <button id="theme-toggle" class="theme-btn">🌙 Dark Mode</button>
+    </nav>
+    <div class="auth-container" style="width: 500px; margin-top: 40px;">
+        <h2 style="margin-top: 0; font-size: 28px;">Lifetime Stats</h2>
+
+        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <h3 style="margin: 0; color: #1565c0; font-size: 24px;">{{ current_user.games_played }}</h3>
+            <p style="margin: 0; font-weight: bold; color: #1976d2; text-transform: uppercase; font-size: 12px;">Total Games Played</p>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #ccc; margin: 20px 0;">
+
+        <div class="history-stats">
+            <div class="stat-card easy">
+                <h3>Easy</h3>
+                <p>Clears: <span class="highlight">{{ current_user.easy_clears }}</span></p>
+                <p>Flawless: <span class="highlight">{{ current_user.easy_flawless }}</span></p>
+            </div>
+
+            <div class="stat-card medium">
+                <h3>Medium</h3>
+                <p>Clears: <span class="highlight">{{ current_user.medium_clears }}</span></p>
+                <p>Flawless: <span class="highlight">{{ current_user.medium_flawless }}</span></p>
+            </div>
+
+            <div class="stat-card hard">
+                <h3>Hard</h3>
+                <p>Clears: <span class="highlight">{{ current_user.hard_clears }}</span></p>
+                <p>Flawless: <span class="highlight">{{ current_user.hard_flawless }}</span></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const themeBtn = document.getElementById('theme-toggle');
+        if (localStorage.getItem('sudoku_theme') === 'dark'){
+            document.body.classList.add('dark-mode');
+            themeBtn.textContent = '☀️ Light Mode';
+        }
+        themeBtn.addEventListener('click', function(){
+            document.body.classList.toggle('dark-mode');
+            if(document.body.classList.contains('dark-mode')){
+                themeBtn.textContent = '☀️ Light Mode';
+                localStorage.setItem('sudoku_theme', 'dark');
+            } else {
+                themeBtn.textContent = '🌙 Dark Mode';
+                localStorage.setItem('sudoku_theme', 'light');
+            }
+        });
+    </script>
+</body>
+</html>
