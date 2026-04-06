@@ -18,14 +18,16 @@ def send_otp_email(receiver_email, otp_code):
         "sender": {"name": "Sudoku Web", "email": sender_email},
         "to": [{"email": receiver_email}],
         "subject": "Sudoku Web - Verify Your Account",
-        "htmlcontent": f"<h2>Welcome to Sudoku Web!</h2><p>Your 6-digit verification code is: <strong>{otp_code}</strong></p>"
+        "htmlContent": f"<h2>Welcome to Sudoku Web!</h2><p>Your 6-digit verification code is: <strong>{otp_code}</strong></p>"
     }
     headers = {
         "accept": "application/json",
-        "api_key": api_key,
-        "content_type": "application/json"
+        "api-key": api_key,
+        "content-type": "application/json"
     }
-    requests.post(url, json=payload, headers=headers)
+    response = requests.post(url, json=payload, headers=headers)
+    if response.status_code not in [200,201]:
+        print(f"BREVO ERROR (OTP): {response.status_code} - {response.text}")
 
 def send_reset_email(receiver_email, otp_code):
     api_key = os.getenv('BREVO_API_KEY')
@@ -35,14 +37,16 @@ def send_reset_email(receiver_email, otp_code):
         "sender": {"name": "Sudoku Web", "email": sender_email},
         "to": [{"email": receiver_email}],
         "subject": "Sudoku Web - Password Reset",
-        "htmlcontent": f"<h2>Password Reset Request!</h2><p>Your 6-digit reset code is: <strong>{otp_code}</strong></p><p>If you did not request this, please ignore this email.</p>"
+        "htmlContent": f"<h2>Password Reset Request!</h2><p>Your 6-digit reset code is: <strong>{otp_code}</strong></p><p>If you did not request this, please ignore this email.</p>"
     }
     headers = {
         "accept": "application/json",
-        "api_key": api_key,
-        "content_type": "application/json"
+        "api-key": api_key,
+        "content-type": "application/json"
     }
-    requests.post(url, json=payload, headers=headers)
+    response = requests.post(url, json=payload, headers=headers)
+    if response.status_code not in [200,201]:
+        print(f"BREVO ERROR (RESET): {response.status_code} - {response.text}")
 
 app = Flask(__name__)
 
