@@ -19,7 +19,8 @@ def send_otp_email(receiver_email, otp_code):
     msg['Subject'] = 'Sudoku Web - Verify Your Account'
     msg['From'] = sender_email
     msg['To'] = receiver_email
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+    with smtplib.SMTP_SSL('smtp.gmail.com', 587) as server:
+        server.starttls()
         server.login(sender_email, app_password)
         server.sendmail(sender_email, receiver_email, msg.as_string())
 
