@@ -8,32 +8,41 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import sudoku_logic
 import json
 import requests
-import smtplib
-from email.mime.text import MIMEText
 import random
 
 def send_otp_email(receiver_email, otp_code):
+    api_key = os.getenv('BREVO_API_KEY')
     sender_email = os.getenv('EMAIL_USER')
-    app_password = os.getenv('EMAIL_PASS')
-    msg = MIMEText(f"Welcome to Sudoku Web! Your 6-digit verification code is: {otp_code}")
-    msg['Subject'] = 'Sudoku Web - Verify Your Account'
-    msg['From'] = sender_email
-    msg['To'] = receiver_email
-    with smtplib.SMTP('smtp.gmail.com', 587) as server:
-        server.starttls()
-        server.login(sender_email, app_password)
-        server.sendmail(sender_email, receiver_email, msg.as_string())
+    url = "https://api.brevo.com/v3/smtp/email"
+    payload = {
+        "sender": {"name": "Sudoku Web", "email": sender_email},
+        "to": [{"email": receiver_email}],
+        "subject": "Sudoku Web - Verify Your Account",
+        "htmlcontent": f"<h2>Welcome to Sudoku Web!</h2><p>Your 6-digit verification code is: <strong>{otp_code}</strong></p>"
+    }
+    headers = {
+        "accept": "application/json",
+        "api_key": api_key,
+        "content_type": "application/json"
+    }
+    requests.post(url, json=payload, headers=headers)
 
 def send_reset_email(receiver_email, otp_code):
+    api_key = os.getenv('BREVO_API_KEY')
     sender_email = os.getenv('EMAIL_USER')
-    app_password = os.getenv('EMAIL_PASS')
-    msg = MIMEText(f"You requested a password reset for Sudoku Web. Your 6-digit reset code is: {otp_code}\n\nIf not request this, please ignore this email.")
-    msg['Subject'] = 'Sudoku Web - Password Reset'
-    msg['From'] = sender_email
-    msg['To'] = receiver_email
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-        server.login(sender_email, app_password)
-        server.sendmail(sender_email, receiver_email, msg.as_string())
+    url = "https://api.brevo.com/v3/smtp/email"
+    payload = {
+        "sender": {"name": "Sudoku Web", "email": sender_email},
+        "to": [{"email": receiver_email}],
+        "subject": "Sudoku Web - Password Reset",
+        "htmlcontent": f"<h2>Password Reset Request!</h2><p>Your 6-digit reset code is: <strong>{otp_code}</strong></p><p>If you did not request this, please ignore this email.</p>"
+    }
+    headers = {
+        "accept": "application/json",
+        "api_key": api_key,
+        "content_type": "application/json"
+    }
+    requests.post(url, json=payload, headers=headers)
 
 app = Flask(__name__)
 
