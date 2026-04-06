@@ -422,3 +422,12 @@ async function saveGameState() {
     });
 }
 setInterval(saveGameState, 5000)
+
+document.querySelectorAll('.numpad-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        if (isGameOver || !selectedCell) return;
+        const val = this.getAttribute('data-value');
+        const keyToSimulate = (val === "0") ? "Backspace" : val;
+        document.dispatchEvent(new KeyboardEvent('keydown', { 'key': keyToSimulate }));
+    });
+});

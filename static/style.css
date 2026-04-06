@@ -533,3 +533,42 @@ body.dark-mode .auth-container{
         margin: 0;
     }
 }
+
+.numpad-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    max-width: 350px;
+    margin: 20px auto;
+}
+.numpad-btn{
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    font-weight: bold;
+    background-color: #f0f0f0;
+    color: #333;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+}
+.numpad-btn:active{
+    background-color: #007bff;
+    color: white;
+    transform: scale(0.95);
+}
+body.dark-mode .numpad-btn{
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border-color: #444;
+}
+body.dark-mode .numpad-btn:hover{
+    background-color: #3a3a3a;
+}
+body.dark-mode .numpad-btn:active{
+    background-color: #004ba0;
+    color: white;
+    border-color: #64b5f6;
+}
